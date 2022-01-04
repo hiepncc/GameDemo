@@ -13,13 +13,14 @@ public class GameManager : MonoBehaviour
   public GameObject panelLevelCompleted;
   public GameObject panelGameOver;
   public GameObject[] levels;
-    public GameObject walls;
-    public Text scoreText;
+  public GameObject walls;
+  public Text scoreText;
   public Text ballsText;
   public Text levelText;
-    public Text highScoreText;
-    public ToggleGroup toggleGr;
-    private float _speed = 30;
+  public Text highScoreText;
+  public ToggleGroup toggleGr;
+  private float _speed = 30;
+  private int muted;
 
   bool _isSwitchingState;
   GameObject _curentBall;
@@ -65,26 +66,32 @@ public class GameManager : MonoBehaviour
 
   }
 
-  // Start is called before the first frame update
-      void Start()
-      {
-            PlayerPrefs.SetInt("ToggleSelected", 1);
-            PlayerPrefs.DeleteKey("highScore");
-            Instance = this;
-            switchSate(State.MENU);
 
-      }
+
+  // Start is called before the first frame update
+  void Start()
+  {
+    // muted = PlayerPrefs.GetInt("Muted");
+    if (!PlayerPrefs.HasKey("ToggleSelected"))
+    {
+      PlayerPrefs.SetInt("ToggleSelected", 1);
+    }
+    PlayerPrefs.DeleteKey("highScore");
+    Instance = this;
+    switchSate(State.MENU);
+
+  }
 
   // Update is called once per frame
   void Update()
   {
     if (Input.GetKeyDown(KeyCode.Escape))
     {
-            Balls = 0;
-            Destroy(_curentBall);
-            Destroy(_curentLevel);
-            Destroy(_curentPlayer);
-            switchSate(State.MENU);
+      Balls = 0;
+      Destroy(_curentBall);
+      Destroy(_curentLevel);
+      Destroy(_curentPlayer);
+      switchSate(State.MENU);
     }
     switch (_state)
     {
@@ -102,13 +109,13 @@ public class GameManager : MonoBehaviour
           {
             _curentBall = Instantiate(ballPrefab);
             _curentBall.GetComponent<Ball>().changeSpeed(_speed);
-           }
+          }
           else
           {
             switchSate(State.GAMEOVER);
           }
         }
-         if (_curentLevel != null && _curentLevel.transform.childCount == 0 && !_isSwitchingState)
+        if (_curentLevel != null && _curentLevel.transform.childCount == 0 && !_isSwitchingState)
         //if (_curentLevel != null && _curentLevel.transform.childCount == 0)
         {
           switchSate(State.LEVELCOMPLETED);
@@ -130,41 +137,41 @@ public class GameManager : MonoBehaviour
     switchSate(State.INIT);
   }
 
-    public void levelsBtnClicked()
-    {
-        switchSate(State.PICKLEVEL);
-    }
+  public void levelsBtnClicked()
+  {
+    switchSate(State.PICKLEVEL);
+  }
 
-    public void changeSpeed(float speed)
-    {
-        _speed = speed;
-    }
-    public void goToMenu()
-    {
-        switchSate(State.MENU);
-    }
-    public void configBtnClicked()
-    {
-        switchSate(State.CONFIG);
-    }
+  public void changeSpeed(float speed)
+  {
+    _speed = speed;
+  }
+  public void goToMenu()
+  {
+    switchSate(State.MENU);
+  }
+  public void configBtnClicked()
+  {
+    switchSate(State.CONFIG);
+  }
 
-    public void quitBtnClicked()
-    {
-        Application.Quit();
-    }
-    private void switchSate(State newState, float delay = 0)
+  public void quitBtnClicked()
+  {
+    Application.Quit();
+  }
+  private void switchSate(State newState, float delay = 0)
   {
     StartCoroutine(SwitchDelay(newState, delay));
   }
 
   IEnumerator SwitchDelay(State newState, float delay)
   {
-     _isSwitchingState = true;
+    _isSwitchingState = true;
     yield return new WaitForSeconds(delay);
     endState();
     _state = newState;
     beginState(newState);
-     _isSwitchingState = false;
+    _isSwitchingState = false;
   }
 
   private void beginState(State newState)
@@ -172,7 +179,7 @@ public class GameManager : MonoBehaviour
     switch (newState)
     {
       case State.MENU:
-                walls.SetActive(false);
+        walls.SetActive(false);
         Cursor.visible = true;
         panelMenu.SetActive(true);
         break;
@@ -187,7 +194,7 @@ public class GameManager : MonoBehaviour
       case State.INIT:
         Cursor.visible = false;
         panelPlay.SetActive(true);
-        Score = 0; 
+        Score = 0;
         Level = PlayerPrefs.GetInt("ToggleSelected");
         Balls = 3;
         if (_curentLevel != null)
@@ -238,13 +245,13 @@ public class GameManager : MonoBehaviour
       case State.MENU:
         panelMenu.SetActive(false);
         break;
-        case State.PICKLEVEL:
-            panelPickLevel.SetActive(false);
-            break;
-        case State.CONFIG:
-            panelConfig.SetActive(false);
-            break;
-            case State.INIT:
+      case State.PICKLEVEL:
+        panelPickLevel.SetActive(false);
+        break;
+      case State.CONFIG:
+        panelConfig.SetActive(false);
+        break;
+      case State.INIT:
         //panelPlay.SetActive(false);
         break;
       case State.LOADLEVEL:

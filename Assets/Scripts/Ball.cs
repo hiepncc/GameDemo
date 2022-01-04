@@ -8,14 +8,14 @@ public class Ball : MonoBehaviour
   Renderer _renderer;
 
 
-    public void changeSpeed(float speed)
-    {
-        _speed = speed;
-    }
-    // Start is called before the first frame update
-    void Start()
+  public void changeSpeed(float speed)
   {
-      
+    _speed = speed;
+  }
+  // Start is called before the first frame update
+  void Start()
+  {
+
     _renderer = GetComponent<Renderer>();
     _rigidbody = GetComponent<Rigidbody>();
     Invoke("Launch", 0.05f);

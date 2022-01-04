@@ -8,7 +8,7 @@ public class SoundBackground : MonoBehaviour
 
     private void Awake()
     {
-        if(backgroundMusic == null)
+        if (backgroundMusic == null)
         {
             backgroundMusic = this;
             DontDestroyOnLoad(backgroundMusic);
